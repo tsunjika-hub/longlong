@@ -293,7 +293,7 @@ const goBackQuestion = () => {
   }, [scores]);
 
   const result = results[resultKey];
-  const shareUrl = "https://music-vert-two.vercel.app/";
+  const shareUrl = "https://longlong-rouge.vercel.app/";
 
   const shareCardRef = useRef(null);
 
