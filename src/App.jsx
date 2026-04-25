@@ -1,218 +1,245 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { toPng } from "html-to-image";
-import { supabase } from "./lib/supabase";
+// import { supabase } from "./lib/supabase";
 
 export default function ClassicalPieceQuiz() {
 const results = {
-  clair_de_lune: {
-    title: "你是《月光》",
-    rankTitle: "月光",
-    composer: "德彪西 Claude Debussy",
-    era: "印象派",
-    emoji: "🌙",
-    avatar: "/avatars/debussy.png",
-    color: "from-slate-900 via-indigo-900 to-blue-950",
-    tags: ["安静", "细腻", "感受力强", "有一点疏离"],
+  jiahao_long: {
+    title: "你是 嘉豪龙",
+    rankTitle: "嘉豪龙",
+    composer: "帅气至极型",
+    era: "无懈可击系",
+    emoji: "😎",
+    avatar: "/avatars/jiahaolong.png",
+    color: "",
+    tags: ["帅气", "无懈可击", "人见人爱", "花间花开"],
     description:
-      "你不一定总是最热闹的那个人，但你很有自己的节奏。你敏感、会观察，也很容易被气氛和细节打动。外表平静，内里其实有很多层情绪。",
-    vibe:
-      "适合深夜、雨天、一个人走路、或者把耳机声音开得刚刚好的时刻。",
-    recommendation: "如果你喜欢这首，也可以试试《梦幻曲》与《Gymnopédie No.1》。",
-    audio: "/audio/clair_de_lune.mp3",
+      "你是嘉豪龙，帅气至极，无懈可击，人见人爱，花见花开，电饭煲见了都会自动保温。你的存在本身就是一种答案，虽然问题可能根本没问你。",
+    vibe: "像穿着黑色连帽衫站在宇宙门口的龙：不解释，但很强。",
+    recommendation: "适合：登场、压轴、沉默装酷、让所有不合理的选项突然合理。",
   },
 
-  spring: {
-    title: "你是《四季・春》",
-    rankTitle: "四季・春",
-    composer: "维瓦尔第 Antonio Vivaldi",
-    era: "巴洛克",
-    emoji: "🌿",
-    avatar: "/avatars/vivaldi.png",
-    color: "from-emerald-700 via-green-600 to-lime-500",
-    tags: ["有活力", "外向", "行动派", "感染力强"],
+  naigou: {
+    title: "你是 奶狗",
+    rankTitle: "奶狗",
+    composer: "温柔黏人型",
+    era: "听话乖巧系",
+    emoji: "🐶",
+    avatar: "/avatars/naigou.jpg",
+    color: "",
+    tags: ["温柔", "体贴", "爱撒娇", "听话乖巧"],
     description:
-      "你带着一种很自然的生命力。你不喜欢一直停在原地，更喜欢开始、尝试、推进。你往往能让身边的人也跟着动起来。",
-    vibe:
-      "适合晴天、出门、开始新计划、或者刚下定决心改变自己的时候。",
-    recommendation: "如果你喜欢这首，也可以试试《小夜曲》与《G弦上的咏叹调》。",
-    audio: "/audio/spring.mp3",
+      "你是奶狗，温柔体贴，爱撒娇，爱粘人，听话乖巧，甚至连鈍角都愿意陪它散步。你不一定懂题，但你很懂陪伴。",
+    vibe: "像一只笑得很开心的黄色奶狗：问题乱不乱不重要，开心就会摇尾巴。",
+    recommendation: "适合：陪朋友聊天、撒娇、装乖、在混乱世界里提供情绪价值。",
   },
 
-  fifth: {
-    title: "你是《命运交响曲》",
-    rankTitle: "命运交响曲",
-    composer: "贝多芬 Ludwig van Beethoven",
-    era: "古典主义 / 浪漫主义过渡",
-    emoji: "⚡",
-    avatar: "/avatars/beethoven.png",
-    color: "from-zinc-900 via-neutral-800 to-stone-700",
-    tags: ["意志强", "不服输", "有压迫感", "能扛事"],
+  huluxiao_long: {
+    title: "你是 赫鲁晓龙",
+    rankTitle: "赫鲁晓龙",
+    composer: "务实狂躁型",
+    era: "修正主义系",
+    emoji: "🌽",
+    avatar: "/avatars/heluxiaolong.jpg",
+    color: "",
+    tags: ["务实", "狂躁", "反复无常", "盲目自信"],
     description:
-      "你不是轻飘飘的人。你身上有一种‘就算困难也要往前’的力量。别人可能觉得你有点强势，但你其实只是很认真地对待自己的人生。",
-    vibe: "适合迎战压力、咬牙坚持、重新振作的时候。",
-    recommendation: "如果你喜欢这首，也可以试试《英雄交响曲》与《火鸟》组曲。",
-    audio: "/audio/symphony_No.5.mp3",
+      "你是赫鲁晓龙，务实与狂躁并存，修正主义与反复无常齐飞。你有时像玉米一样朴素，有时像电饭煲一样突然启动。",
+    vibe: "像一根正在大笑的玉米龙：它不知道自己为什么笑，但它非常确信自己是对的。",
+    recommendation: "适合：突然宣布计划、突然推翻计划、然后再次充满自信。",
   },
 
-  canon: {
-    title: "你是《卡农》",
-    rankTitle: "卡农",
-    composer: "帕赫贝尔 Johann Pachelbel",
-    era: "巴洛克",
-    emoji: "🕊️",
-    avatar: "/avatars/pachelbel.png",
-    color: "from-stone-700 via-amber-700 to-rose-800",
-    tags: ["温柔", "稳定", "有陪伴感", "容易被依赖"],
+  feilong: {
+    title: "你是 飞龙",
+    rankTitle: "飞龙",
+    composer: "天衣飘带型",
+    era: "西域浪漫系",
+    emoji: "🎀",
+    avatar: "/avatars/feilong.png",
+    color: "",
+    tags: ["飘逸", "浪漫", "神圣感", "U字形舞动"],
     description:
-      "你给人的感觉是舒服和安心。也许你不一定是最锋利的那种类型，但你很稳，也很适合长期关系。很多人会在你身边放松下来。",
-    vibe:
-      "适合午后、婚礼、慢慢聊天、和那些不需要刻意用力的关系。",
-    recommendation: "如果你喜欢这首，也可以试试巴赫《G弦上的咏叹调》。",
-    audio: "/audio/canon.mp3",
+      "你是飞龙。她们不直接飞翔，常以天衣飘带翻舞、云气缭绕的造型出现。你造型精美，身姿呈U字形舞动，既有宗教神圣感，又极具浪漫色彩。",
+    vibe: "像一条在空气里写草书的龙：不飞，但所有人都觉得你刚刚飞过。",
+    recommendation: "适合：艺术登场、优雅转身、用飘带把问题缠成谜语。",
   },
 
-  lacrimosa: {
-    title: "你是《Lacrimosa》",
-    rankTitle: "Lacrimosa",
-    composer: "莫扎特 Wolfgang Amadeus Mozart",
-    era: "古典主义",
-    emoji: "🕯️",
-    avatar: "/avatars/Mozart.png",
-    color: "from-slate-800 via-slate-700 to-gray-500",
-    tags: ["共情力高", "深沉", "记忆感强", "情绪浓"],
+  shishen_long: {
+    title: "你是 狮身奶面龙",
+    rankTitle: "狮身奶面龙",
+    composer: "哈吉米型",
+    era: "古代谜语系",
+    emoji: "🗿",
+    avatar: "/avatars/shishennaimianlong.png",
+    color: "",
+    tags: ["哈吉米", "神秘", "稳定", "不可解释"],
     description:
-      "你很会感受，也很难真正‘无所谓’。你对很多事情都不是表面接受，而是会放进心里慢慢消化。你的深度，会让真正懂你的人很珍惜。",
-    vibe:
-      "适合回忆、遗憾、沉思，以及那些无法轻易说出口的情绪。",
-    recommendation: "如果你喜欢这首，也可以试试《Adagio for Strings》或《天鹅》。",
-    audio: "/audio/lacrimosa.mp3",
+      "你是狮身奶面龙，评价为：哈吉米。你不需要解释，因为解释会破坏哈吉米本身的完整性。",
+    vibe: "像一只表情平静的古代奶面像：它什么都没说，但大家已经开始害怕自己听懂了。",
+    recommendation: "适合：沉默、凝视、出现在不该出现的地方、让别人自己脑补。",
   },
 
-  turkish_march: {
-    title: "你是《土耳其进行曲》",
-    rankTitle: "土耳其进行曲",
-    composer: "莫扎特 Wolfgang Amadeus Mozart",
-    era: "古典主义",
-    emoji: "🎹",
-    avatar: "/avatars/Mozart.png",
-    color: "from-pink-400 via-rose-400 to-orange-300",
-    tags: ["机灵", "节奏感强", "有趣", "不喜欢无聊"],
+  xielong: {
+    title: "你是 蟹龙",
+    rankTitle: "蟹龙",
+    composer: "大寒满黄型",
+    era: "甲壳美食系",
+    emoji: "🦀",
+    avatar: "/avatars/xielong.jpg",
+    color: "",
+    tags: ["大寒之物", "满黄", "防御", "挺好吃"],
     description:
-      "你反应快，脑子转得也快。你通常不喜欢拖泥带水，更偏好轻快、直接、有趣的交流方式。你很容易成为气氛里的亮点。",
+      "你是蟹龙，大寒之物，但是满黄，挺好吃。你外表冷静，内心浓郁，遇到问题先举钳子，再考虑要不要回答。",
+    vibe: "像一只横着走进考场的蟹龙：它不是不会走直线，只是不屑。",
+    recommendation: "适合：保护自己、慢慢靠近、横向解决问题、在关键时刻满黄登场。",
+  },
+
+  meiyu_long: {
+    title: "你是 美龙鱼",
+    rankTitle: "美龙鱼",
+    composer: "无法上吊之物",
+    era: "水中漂浮系",
+    emoji: "🐟",
+    avatar: "/avatars/meilongyu.png",
+    color: "",
+    tags: ["无法上吊", "漂浮", "轻盈", "无法定义"],
+    description:
+      "你是美龙鱼，无法上吊之物。你不属于陆地，也不属于逻辑，你只是在水里优雅地游过，然后把问题泡软。",
+    vibe: "像一条在蓝色水里微笑的龙鱼：它没有脖子，所以世界失去了一个选项。",
+    recommendation: "适合：逃离尴尬、漂浮人生、把沉重问题变成水母。",
+  },
+
+    yenai_long: {
+    title: "你是 椰奶龙",
+    emoji: "🥥",
+    avatar: "/avatars/yenailong.png",
+    tags: ["白", "流动", "奇怪"],
+    description:
+      "你是椰奶龙。你站在海里，但海在你身上流出来。你不是在流汗，是在变成饮品。世界在你腋下完成循环。",
     vibe:
-      "适合聚会、聊天、短视频、和脑袋灵光一闪的时候。",
-    recommendation: "如果你喜欢这首，也可以试试《小星星变奏曲》。",
-    audio: "/audio/turkish_march.mp3",
+      "像一杯站起来的椰奶：不知道是你在流，还是世界在被你倒。",
+    recommendation:
+      "建议：不要解释，解释会变稀。",
   },
 };
 
   const questions = [
-    {
-      id: 1,
-      text: "周末终于空下来，你更想怎么度过？",
-      options: [
-        { text: "一个人安静待着，听点东西", weights: { clair_de_lune: 2, lacrimosa: 1 } },
-        { text: "立刻出门，见人，感受天气", weights: { spring: 2, turkish_march: 1 } },
-        { text: "把积压的事一口气做完", weights: { fifth: 2 } },
-        { text: "和喜欢的人慢慢吃饭聊天", weights: { canon: 2, clair_de_lune: 1 } },
-      ],
-    },
-    {
-      id: 2,
-      text: "你更容易被哪种人吸引？",
-      options: [
-        { text: "安静但很有故事的人", weights: { clair_de_lune: 2, lacrimosa: 1 } },
-        { text: "有生命力、很明亮的人", weights: { spring: 2 } },
-        { text: "强大、可靠、有主见的人", weights: { fifth: 2 } },
-        { text: "温柔、让人放松的人", weights: { canon: 2 } },
-      ],
-    },
-    {
-      id: 3,
-      text: "别人第一次见你，最可能怎么评价你？",
-      options: [
-        { text: "有点距离感，但很特别", weights: { clair_de_lune: 2 } },
-        { text: "很好相处，挺有元气", weights: { spring: 2, turkish_march: 1 } },
-        { text: "气场挺强的", weights: { fifth: 2 } },
-        { text: "很温和，没什么攻击性", weights: { canon: 2 } },
-      ],
-    },
-    {
-      id: 4,
-      text: "你面对压力时更像哪一种？",
-      options: [
-        { text: "先自己消化，不太想说", weights: { clair_de_lune: 1, lacrimosa: 2 } },
-        { text: "边动边解决，不能停", weights: { spring: 2, fifth: 1 } },
-        { text: "硬扛，越压越想赢", weights: { fifth: 2 } },
-        { text: "希望有人陪着，一起慢慢处理", weights: { canon: 2 } },
-      ],
-    },
-    {
-      id: 5,
-      text: "你更喜欢哪种美感？",
-      options: [
-        { text: "朦胧、夜色、反光、雾气", weights: { clair_de_lune: 2 } },
-        { text: "阳光、草地、风、流动感", weights: { spring: 2 } },
-        { text: "庄严、强烈、戏剧张力", weights: { fifth: 2, lacrimosa: 1 } },
-        { text: "简洁、对称、温柔、耐看", weights: { canon: 2 } },
-      ],
-    },
-    {
-      id: 6,
-      text: "恋爱里你更像哪种类型？",
-      options: [
-        { text: "慢热，确认安全感后才会很深", weights: { clair_de_lune: 2, canon: 1 } },
-        { text: "热烈直接，喜欢就会表达", weights: { spring: 2, turkish_march: 1 } },
-        { text: "不轻易开始，但开始就很认真", weights: { fifth: 2 } },
-        { text: "很会照顾情绪，也容易心软", weights: { canon: 2, lacrimosa: 1 } },
-      ],
-    },
-    {
-      id: 7,
-      text: "你最怕哪一种生活状态？",
-      options: [
-        { text: "太吵，完全没有自己的空间", weights: { clair_de_lune: 2 } },
-        { text: "停滞不前，每天都一样", weights: { spring: 2 } },
-        { text: "软弱退让，被环境推着走", weights: { fifth: 2 } },
-        { text: "关系冷掉，没人真正懂你", weights: { canon: 1, lacrimosa: 2 } },
-      ],
-    },
-    {
-      id: 8,
-      text: "如果要选一个场景做你的专属背景，会是？",
-      options: [
-        { text: "月光下的湖面", weights: { clair_de_lune: 2 } },
-        { text: "春天刚到的花园", weights: { spring: 2 } },
-        { text: "风暴前的剧院舞台", weights: { fifth: 2 } },
-        { text: "木质教堂里透进来的光", weights: { canon: 2, lacrimosa: 1 } },
-      ],
-    },
-    {
-      id: 9,
-      text: "你平时更像哪种社交模式？",
-      options: [
-        { text: "熟了以后才会打开", weights: { clair_de_lune: 2 } },
-        { text: "很容易和别人玩起来", weights: { spring: 2, turkish_march: 1 } },
-        { text: "不一定热情，但存在感很强", weights: { fifth: 2 } },
-        { text: "会默默照顾大家的感受", weights: { canon: 2, lacrimosa: 1 } },
-      ],
-    },
-    {
-      id: 10,
-      text: "你最想让别人记住你哪一点？",
-      options: [
-        { text: "我的气质和感觉", weights: { clair_de_lune: 2 } },
-        { text: "我的活力和热情", weights: { spring: 2 } },
-        { text: "我的力量和意志", weights: { fifth: 2 } },
-        { text: "我的温柔和真诚", weights: { canon: 2, lacrimosa: 1 } },
-      ],
-    },
-  ];
+      {
+        id: 1,
+        text: "你多長時間沒洗澡了",
+        options: [
+          { text: "25個小時", weights: { jiahao_long: 2, naigou: 1 } },
+          { text: "電飯煲", weights: { huluxiao_long: 2, yenai_long: 1 } },
+          { text: "比基尼好看不好看", weights: { feilong: 2, meiyu_long: 1 } },
+          { text: "鈍角", weights: { xielong: 2, shishen_long: 1 } },
+        ],
+      },
+
+      {
+        id: 2,
+        text: "張家口有沒有外星人",
+        options: [
+          { text: "抽烟有害健康", weights: { jiahao_long: 2, yenai_long: 1 } },
+          { text: "有點害怕", weights: { naigou: 2 } },
+          { text: "有", weights: { huluxiao_long: 2 } },
+          { text: "鈍角", weights: { shishen_long: 2 } },
+        ],
+      },
+
+      {
+        id: 3,
+        text: "意大利麵應該拌",
+        options: [
+          { text: "42號混凝土", weights: { shishen_long: 2 } },
+          { text: "93號汽油", weights: { jiahao_long: 2 } },
+          { text: "利多卡因", weights: { huluxiao_long: 2, yenai_long: 1 } },
+          { text: "鈍角", weights: { xielong: 2 } },
+        ],
+      },
+
+      {
+        id: 4,
+        text: "鈍角",
+        options: [
+          { text: "鈍角", weights: { xielong: 2 } },
+          { text: "鈍角", weights: { shishen_long: 2 } },
+          { text: "鈍角", weights: { huluxiao_long: 2, yenai_long: 1 } },
+          { text: "鈍角", weights: { jiahao_long: 2 } },
+        ],
+      },
+
+      {
+        id: 5,
+        text: "日全食多久出現一次",
+        options: [
+          { text: "18個月", weights: { meiyu_long: 2 } },
+          { text: "看心情", weights: { naigou: 2, yenai_long: 1 } },
+          { text: "不能吃", weights: { xielong: 2 } },
+          { text: "鈍角", weights: { shishen_long: 2 } },
+        ],
+      },
+
+      {
+        id: 6,
+        text: "第一次中東戰爭是",
+        options: [
+          { text: "第二次中東戰爭", weights: { huluxiao_long: 2 } },
+          { text: "獨立戰爭", weights: { jiahao_long: 2 } },
+          { text: "收穫日", weights: { naigou: 2 } },
+          { text: "鈍角", weights: { feilong: 2, meiyu_long: 1 } },
+        ],
+      },
+
+      {
+        id: 7,
+        text: "吃飯的時候應該上厠所嗎",
+        options: [
+          { text: "應該睡覺", weights: { naigou: 2 } },
+          { text: "太累太忙", weights: { meiyu_long: 2 } },
+          { text: "應該", weights: { huluxiao_long: 2, yenai_long: 1 } },
+          { text: "鈍角", weights: { xielong: 2, shishen_long: 1 } },
+        ],
+      },
+
+      {
+        id: 8,
+        text: "月亮把鞋子煮成了星期三，玻璃鱼在电梯里背诵橘子的影子。桌子突然学会了下雨，于是所有的铅笔都开始假装自己是远方的火车。蓝色的声音从门缝里走出来，问一只没有名字的杯子：为什么云朵要穿袜子？",
+        options: [
+          { text: "因為星期三的玻璃魚正在煮鞋子", weights: { meiyu_long: 2 } },
+          { text: "因為杯子把昨天折成了三角形", weights: { shishen_long: 2 } },
+          { text: "因為藍色的聲音忘記帶電梯", weights: { jiahao_long: 2, yenai_long: 1 } },
+          { text: "鈍角", weights: { xielong: 2 } },
+        ],
+      },
+
+      {
+        id: 9,
+        text: "為什麼冰箱要在彩虹裡學會打嗝？",
+        options: [
+          { text: "因為鉛筆正在給月亮剪頭髮", weights: { feilong: 2 } },
+          { text: "因為昨天的椅子偷偷變成了番茄", weights: { huluxiao_long: 2 } },
+          { text: "因為電風扇把海浪裝進口袋", weights: { naigou: 2, yenai_long: 1 } },
+          { text: "鈍角", weights: { shishen_long: 2 } },
+        ],
+      },
+
+      {
+        id: 10,
+        text: "為什麼紅色的雨傘要和一碗星星吵架？",
+        options: [
+          { text: "因為樓梯正在練習變成星期五", weights: { jiahao_long: 2 } },
+          { text: "因為襪子把太陽寄給了沒有門的房間", weights: { naigou: 2 } },
+          { text: "因為橘子在電話裡唱了一首透明的歌", weights: { meiyu_long: 2, yenai_long: 1 } },
+          { text: "鈍角", weights: { feilong: 2 } },
+        ],
+      },
+    ];
 
   const [started, setStarted] = useState(false);
   const [step, setStep] = useState(0);
   const [scores, setScores] = useState({});
+  const [answerHistory, setAnswerHistory] = useState([]);
   const [finished, setFinished] = useState(false);
   const [showRankingPage, setShowRankingPage] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -224,22 +251,44 @@ const results = {
   const progress = ((step + 1) / questions.length) * 100;
 
   const handleAnswer = (weights) => {
-    const next = { ...scores };
-    Object.entries(weights).forEach(([key, value]) => {
-      next[key] = (next[key] || 0) + value;
-    });
-    setScores(next);
+  const next = { ...scores };
 
-    if (step + 1 >= questions.length) {
-      setFinished(true);
-    } else {
-      setStep(step + 1);
+  Object.entries(weights).forEach(([key, value]) => {
+    next[key] = (next[key] || 0) + value;
+  });
+
+  setScores(next);
+  setAnswerHistory((prev) => [...prev, weights]);
+
+  if (step + 1 >= questions.length) {
+    setFinished(true);
+  } else {
+    setStep(step + 1);
+  }
+};
+
+const goBackQuestion = () => {
+  if (step === 0 || answerHistory.length === 0) return;
+
+  const lastWeights = answerHistory[answerHistory.length - 1];
+  const nextScores = { ...scores };
+
+  Object.entries(lastWeights).forEach(([key, value]) => {
+    nextScores[key] = (nextScores[key] || 0) - value;
+
+    if (nextScores[key] <= 0) {
+      delete nextScores[key];
     }
-  };
+  });
+
+  setScores(nextScores);
+  setAnswerHistory((prev) => prev.slice(0, -1));
+  setStep((prev) => prev - 1);
+};
 
   const resultKey = useMemo(() => {
     const entries = Object.entries(scores);
-    if (!entries.length) return "clair_de_lune";
+    if (!entries.length) return "naigou";
     return entries.sort((a, b) => b[1] - a[1])[0][0];
   }, [scores]);
 
@@ -248,12 +297,24 @@ const results = {
 
   const shareCardRef = useRef(null);
 
+  const primaryButtonClass =
+  "rounded-3xl border border-amber-300 bg-amber-100 px-6 py-4 text-lg font-semibold text-amber-900 shadow-md transition hover:bg-amber-200 hover:scale-[1.01] active:scale-[0.99]";
+  const secondaryButtonClass =
+  "rounded-3xl border border-amber-200 bg-[#fdf6e3] px-6 py-4 text-lg font-semibold text-amber-900 shadow-sm transition hover:bg-amber-100 active:scale-[0.99]";
+
+  const smallButtonClass =
+  "rounded-2xl border border-amber-200 bg-[#fdf6e3] px-5 py-4 font-semibold text-amber-900 shadow-sm transition hover:bg-amber-100 active:scale-[0.99]";
+  // const mainBg = finished
+  // ? `bg-gradient-to-br ${result?.color || "from-yellow-300 via-amber-300 to-orange-300"}`
+  // : "bg-gradient-to-br from-yellow-300 via-amber-200 to-lime-200";
+
   const restart = () => {
-    setStarted(false);
-    setStep(0);
-    setScores({});
-    setFinished(false);
-    hasSubmittedRef.current = false;
+  setStarted(false);
+  setStep(0);
+  setScores({});
+  setAnswerHistory([]);
+  setFinished(false);
+  hasSubmittedRef.current = false;
 };
 
  const saveResultImage = async () => {
@@ -449,7 +510,7 @@ function RankingPage({ rankingData, results, onBack, loading, totalTests }) {
           className="rounded-[1.5rem] border border-zinc-200 bg-white p-4"
         >
           <div className="text-center">
-            <div className="text-sm text-zinc-500">你的古典乐人格类型是</div>
+            {/* <div className="text-sm text-zinc-500">你的古典乐人格类型是</div> */}
             <div className="mt-2 text-3xl font-bold text-emerald-700">
               {result.emoji} {result.title}
             </div>
@@ -465,7 +526,7 @@ function RankingPage({ rankingData, results, onBack, loading, totalTests }) {
               />
 
               <div className="text-left">
-                <div className="text-sm text-zinc-500">对应作曲家</div>
+                <div className="text-sm text-zinc-500">對應形象</div>
                 <div className="text-lg font-semibold">{result.composer}</div>
                 <div className="mt-1 text-sm text-zinc-500">{result.era}</div>
               </div>
@@ -501,7 +562,7 @@ function RankingPage({ rankingData, results, onBack, loading, totalTests }) {
           </div>
 
           <div className="mt-4 text-center text-sm text-zinc-500">
-            快来测测你是哪一首古典乐
+            快来测测你是什麽龍
           </div>
         </div>
 
@@ -525,39 +586,46 @@ function RankingPage({ rankingData, results, onBack, loading, totalTests }) {
   );
 }
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${result?.color || "from-zinc-900 to-black"} text-white transition-all duration-700`}>
+    <div className="min-h-screen bg-[#f7f4ec] text-zinc-900 transition-all duration-700">    
       <div className="mx-auto flex min-h-screen max-w-2xl flex-col px-6 py-8">
-        {!started && !finished && (
+       {!started && !finished && (
           <>
-            <div className="mt-10 mb-8 text-center">
-              <div className="mb-4 text-sm tracking-[0.35em] text-white/70">CLASSICAL MUSIC TYPE</div>
-              <h1 className="text-4xl font-bold leading-tight md:text-5xl">测测你是什么古典音乐</h1>
-              <p className="mx-auto mt-4 max-w-xl text-base text-white/80 md:text-lg">
-                10道题，测出你的气质最像哪一首古典乐。
+            <div className="mt-12 mb-10 text-center">
+              <div className="mb-5 text-sm tracking-[0.45em] text-amber-800/60">
+                LONGLONG TYPE
+              </div>
+
+              <h1 className="text-5xl font-extrabold leading-tight text-zinc-950 md:text-6xl">
+                测测你是什么龙
+              </h1>
+
+              <p className="mx-auto mt-5 max-w-xl text-lg text-zinc-700 md:text-xl">
+                10道题，测出你的气质最像哪一只龙。
               </p>
             </div>
 
-            <div className="grid gap-4">
-              <div className="rounded-3xl border border-white/15 bg-white/10 p-6 backdrop-blur-md shadow-2xl">
-                <div className="mb-3 text-sm text-white/70">你会得到</div>
-                <ul className="space-y-2 text-white/90 text-sm md:text-base">
-                  <li>• 你的专属曲子结果</li>
+            <div className="grid gap-5">
+              <div className="rounded-[2rem] border border-amber-100 bg-[#fffdf7] p-7 shadow-[0_18px_45px_rgba(120,92,30,0.10)]">
+                <div className="mb-4 text-base text-zinc-500">你会得到</div>
+
+                <ul className="space-y-3 text-base leading-7 text-zinc-700 md:text-lg">
+                  <li>• 你的专属龙龙形象</li>
                   <li>• 性格标签 + 氛围说明</li>
-                  <li>• 相似古典曲目推荐</li>
+                  <li>• 和其他龙龙的交朋友建议</li>
                 </ul>
               </div>
 
-              <div className="grid gap-3 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-2">
                 <button
                   onClick={() => setStarted(true)}
-                  className="rounded-3xl bg-white px-6 py-4 text-lg font-semibold text-zinc-900 shadow-xl transition hover:scale-[1.01] active:scale-[0.99]"
+                  className="rounded-[1.75rem] border border-amber-300 bg-[#fff3c4] px-6 py-4 text-lg font-bold text-amber-950 shadow-[0_10px_28px_rgba(180,120,20,0.18)] transition hover:bg-[#ffe9a3] hover:scale-[1.01] active:scale-[0.99]"
                 >
                   开始测试
                 </button>
 
                 <button
                   onClick={openRankingPage}
-                  className="rounded-3xl border border-white/20 bg-white/10 px-6 py-4 text-lg font-semibold text-white shadow-xl transition hover:bg-white/20 active:scale-[0.99]"
+                  className="rounded-[1.75rem] border border-amber-300 bg-[#fff8dc] px-6 py-4 text-lg font-bold text-amber-950 shadow-[0_10px_28px_rgba(180,120,20,0.12)] transition hover:bg-[#fff0bd] active:scale-[0.99]"
                 >
                   排行榜
                 </button>
@@ -568,26 +636,36 @@ function RankingPage({ rankingData, results, onBack, loading, totalTests }) {
 
         {started && !finished && (
           <>
-            <div className="mb-6 mt-4 flex items-center justify-between text-sm text-white/80">
-              <span>← {step + 1} / {questions.length}</span>
-              <span>认真一点，选最像你的</span>
+            <div className="mb-6 mt-4 flex items-center justify-between text-sm text-zinc-500">
+              <button
+                onClick={goBackQuestion}
+                disabled={step === 0}
+                className="rounded-full border border-amber-200 bg-[#fffdf7] px-4 py-2 text-sm font-medium text-amber-900 shadow-sm transition hover:bg-[#fff3d6] disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                ← 上一题
+              </button>
+
+              <span>{step + 1} / {questions.length}</span>
             </div>
 
-            <div className="mb-6 h-2 overflow-hidden rounded-full bg-white/15">
-              <div className="h-full rounded-full bg-white transition-all duration-500" style={{ width: `${progress}%` }} />
+            <div className="mb-6 h-2 overflow-hidden rounded-full bg-[#eadfca]">
+              <div
+                className="h-full rounded-full bg-amber-400 transition-all duration-500"
+                style={{ width: `${progress}%` }}
+              />
             </div>
 
-            <div className="rounded-[2rem] border border-white/15 bg-white/10 p-6 backdrop-blur-md shadow-2xl">
-              <div className="mb-6 text-2xl font-semibold leading-relaxed md:text-3xl">
+            <div className="rounded-[2rem] border border-amber-100 bg-[#fffdf7] p-7 shadow-[0_18px_45px_rgba(120,92,30,0.10)]">
+              <div className="mb-7 text-3xl font-extrabold leading-relaxed text-zinc-950 md:text-4xl">
                 {questions[step].text}
               </div>
 
-              <div className="grid gap-3">
+              <div className="grid gap-4">
                 {questions[step].options.map((option, index) => (
                   <button
                     key={index}
                     onClick={() => handleAnswer(option.weights)}
-                    className="rounded-2xl border border-white/10 bg-white/10 px-4 py-4 text-left text-base text-white transition hover:bg-white/20 active:scale-[0.99]"
+                    className="rounded-2xl border border-amber-100 bg-white px-5 py-4 text-left text-base text-zinc-800 shadow-sm transition hover:border-amber-300 hover:bg-[#fff8e6] hover:scale-[1.01] active:scale-[0.99] md:text-lg"
                   >
                     {option.text}
                   </button>
@@ -596,68 +674,59 @@ function RankingPage({ rankingData, results, onBack, loading, totalTests }) {
             </div>
           </>
         )}
-
         {finished && (
           <div className="my-auto">
-            <div className="rounded-[2rem] border border-white/15 bg-white/10 p-6 md:p-8 backdrop-blur-md shadow-2xl">
-              <div className="text-sm tracking-[0.3em] text-white/70">你的测试结果</div>
+            <div className="rounded-[2rem] border border-zinc-200 bg-zinc-50 p-6 md:p-8 backdrop-blur-md shadow-2xl">
+              <div className="text-sm tracking-[0.3em] text-zinc-500">你的测试结果</div>
               <div className="mt-4 text-6xl">{result.emoji}</div>
               <h2 className="mt-4 text-3xl font-bold md:text-5xl">{result.title}</h2>
-              <p className="mt-3 text-white/80">{result.composer} · {result.era}</p>
+              <p className="mt-3 text-zinc-600">{result.composer} · {result.era}</p>
 
-              <div className="mt-6 flex items-center gap-4 rounded-2xl border border-white/10 bg-white/10 p-4">
+              <div className="mt-6 flex items-center gap-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
                 <img
                   src={result.avatar}
                   alt={result.composer}
-                  className="h-20 w-20 rounded-xl border border-white/15 object-cover"
+                  className="h-20 w-20 rounded-xl border border-zinc-200 object-cover"
                   style={{ imageRendering: "pixelated" }}
                 />
                 <div>
-                  <div className="text-sm text-white/60">对应作曲家</div>
-                  <div className="text-lg font-semibold text-white">{result.composer}</div>
+                  <div className="text-sm text-zinc-500">對應形象</div>
+                  <div className="text-lg font-semibold text-zinc-900">{result.composer}</div>
                 </div>
               </div>
 
-              <div className="mt-6">
-                <div className="mb-2 text-sm text-white/70">点击播放对应曲子</div>
+              {/* <div className="mt-6">
+                <div className="mb-2 text-sm text-zinc-500">点击播放对应曲子</div>
                 <audio controls className="w-full">
                   <source src={result.audio} type="audio/mpeg" />
                   你的浏览器不支持音频播放。
                 </audio>
-              </div>
+              </div> */}
 
               <div className="mt-6 flex flex-wrap gap-2">
                 {result.tags.map((tag) => (
-                  <span key={tag} className="rounded-full bg-white/15 px-3 py-1 text-sm text-white/90">
+                  <span key={tag} className="rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-700">
                     {tag}
                   </span>
                 ))}
               </div>
 
-              <div className="mt-6 space-y-4 text-sm leading-7 text-white/90 md:text-base">
+              <div className="mt-6 space-y-4 text-sm leading-7 text-zinc-700 md:text-base">
                 <p>{result.description}</p>
                 <p>{result.vibe}</p>
-                <p className="text-white/80">{result.recommendation}</p>
+                <p className="text-zinc-600">{result.recommendation}</p>
               </div>
 
               <div className="mt-8 grid gap-3 md:grid-cols-3">
-                <button
-                  onClick={openRankingPage}
-                  className="rounded-2xl border border-white/20 bg-white/10 px-5 py-4 font-semibold text-white transition hover:bg-white/20 active:scale-[0.99]"
-                >
+                <button onClick={openRankingPage} className={smallButtonClass}>
                   排行榜
                 </button>
-                
-                <button
-                  onClick={() => setShowShareModal(true)}
-                  className="rounded-2xl bg-white px-5 py-4 font-semibold text-zinc-900 transition hover:scale-[1.01] active:scale-[0.99]"
-                >
+
+                <button onClick={() => setShowShareModal(true)} className={smallButtonClass}>
                   分享给朋友
                 </button>
-                <button
-                  onClick={restart}
-                  className="rounded-2xl border border-white/20 bg-transparent px-5 py-4 font-semibold text-white transition hover:bg-white/10 active:scale-[0.99]"
-                >
+
+                <button onClick={restart} className={smallButtonClass}>
                   再测一次
                 </button>
               </div>
@@ -665,7 +734,7 @@ function RankingPage({ rankingData, results, onBack, loading, totalTests }) {
           </div>
         )}
 
-        <div className="mt-8 text-center text-xs text-white/60">
+        <div className="mt-8 text-center text-xs text-zinc-500">
           made by null
         </div>
         <ShareModal
